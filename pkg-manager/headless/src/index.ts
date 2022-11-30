@@ -151,6 +151,7 @@ export interface HeadlessOptions {
   enableModulesDir?: boolean
   nodeLinker?: 'isolated' | 'hoisted' | 'pnp'
   useGitBranchLockfile?: boolean
+  neverBuiltDependencies?: string[]
 }
 
 export async function headlessInstall (opts: HeadlessOptions) {
@@ -204,6 +205,7 @@ export async function headlessInstall (opts: HeadlessOptions) {
     stdio: opts.ownLifecycleHooksStdio ?? 'inherit',
     storeController: opts.storeController,
     unsafePerm: opts.unsafePerm || false,
+    neverBuiltDependencies: opts.neverBuiltDependencies,
   }
 
   const skipped = opts.skipped || new Set<string>()
@@ -421,7 +423,7 @@ export async function headlessInstall (opts: HeadlessOptions) {
 
   if (opts.ignoreScripts) {
     for (const { id, manifest } of selectedProjects) {
-      if (opts.ignoreScripts && ((manifest?.scripts) != null) &&
+      if (manifest?.scripts &&
         (manifest.scripts.preinstall ?? manifest.scripts.prepublish ??
           manifest.scripts.install ??
           manifest.scripts.postinstall ??

@@ -21,6 +21,7 @@ export interface RunLifecycleHookOptions {
   shellEmulator?: boolean
   stdio?: string
   unsafePerm: boolean
+  neverBuiltDependencies?: string[]
 }
 
 export async function runLifecycleHook (
@@ -28,6 +29,7 @@ export async function runLifecycleHook (
   manifest: ProjectManifest | DependencyManifest,
   opts: RunLifecycleHookOptions
 ) {
+  if (manifest.name && opts.neverBuiltDependencies?.includes(manifest.name)) return
   const optional = opts.optional === true
 
   const m = { _id: getId(manifest), ...manifest }

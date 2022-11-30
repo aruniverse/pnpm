@@ -1383,7 +1383,7 @@ function getResolvedPackage (
 ): ResolvedPackage {
   const peerDependencies = peerDependenciesWithoutOwn(options.pkg)
 
-  const requiresBuild = (options.allowBuild == null || options.allowBuild(options.pkg.name))
+  const requiresBuild = options.allowBuild?.(options.pkg.name)
     ? ((options.dependencyLockfile != null) ? Boolean(options.dependencyLockfile.requiresBuild) : safePromiseDefer<boolean>())
     : false
 

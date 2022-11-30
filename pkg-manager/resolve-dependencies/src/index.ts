@@ -251,7 +251,7 @@ export async function resolveDependencies (
   if (opts.forceFullResolution && opts.wantedLockfile != null) {
     for (const [depPath, pkg] of Object.entries(dependenciesGraph)) {
       if (
-        (opts.allowBuild != null && !opts.allowBuild(pkg.name)) ||
+        !opts.allowBuild?.(pkg.name) ||
         (opts.wantedLockfile.packages?.[depPath] == null) ||
         pkg.requiresBuild === true
       ) continue

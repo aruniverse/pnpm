@@ -255,6 +255,7 @@ export async function mutateModules (
       stdio: opts.ownLifecycleHooksStdio,
       storeController: opts.storeController,
       unsafePerm: opts.unsafePerm || false,
+      neverBuiltDependencies: opts.neverBuiltDependencies,
     }
 
     if (!opts.ignoreScripts && !opts.ignorePackageManifest && rootProjectManifest?.scripts?.[DEV_PREINSTALL]) {
@@ -1153,10 +1154,10 @@ function createAllowBuildFunction (
     onlyBuiltDependencies?: string[]
   }
 ): undefined | ((pkgName: string) => boolean) {
-  if (opts.neverBuiltDependencies != null && opts.neverBuiltDependencies.length > 0) {
+  if (opts?.neverBuiltDependencies?.length) {
     const neverBuiltDependencies = new Set(opts.neverBuiltDependencies)
     return (pkgName) => !neverBuiltDependencies.has(pkgName)
-  } else if (opts.onlyBuiltDependencies != null) {
+  } else if (opts?.onlyBuiltDependencies?.length) {
     const onlyBuiltDependencies = new Set(opts.onlyBuiltDependencies)
     return (pkgName) => onlyBuiltDependencies.has(pkgName)
   }

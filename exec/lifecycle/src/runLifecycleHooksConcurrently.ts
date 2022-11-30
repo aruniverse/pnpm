@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import { fetchFromDir } from '@pnpm/directory-fetcher'
 import { StoreController } from '@pnpm/store-controller-types'
-import { ProjectManifest } from '@pnpm/types'
+import { DependencyManifest, ProjectManifest } from '@pnpm/types'
 import runGroups from 'run-groups'
 import { runLifecycleHook, RunLifecycleHookOptions } from './runLifecycleHook'
 
@@ -17,7 +17,7 @@ export type RunLifecycleHooksConcurrentlyOptions = Omit<RunLifecycleHookOptions,
 
 export interface Importer {
   buildIndex: number
-  manifest: ProjectManifest
+  manifest: ProjectManifest | DependencyManifest
   rootDir: string
   modulesDir: string
   stages?: string[]
@@ -50,7 +50,7 @@ export async function runLifecycleHooksConcurrently (
           rootModulesDir: modulesDir,
         }
         for (const stage of (importerStages ?? stages)) {
-          if ((manifest.scripts == null) || !manifest.scripts[stage]) continue
+          if (!manifest.scripts?.[stage]) continue
           await runLifecycleHook(stage, manifest, runLifecycleHookOpts)
         }
         if (targetDirs == null || targetDirs.length === 0) return
